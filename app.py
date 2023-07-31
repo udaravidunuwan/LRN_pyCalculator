@@ -6,7 +6,7 @@ calculation = ""
 result = None
 
 def add_to_calculation(symbol):
-    global calculation
+    global calculation, result
     calculation += str(symbol)
     text_result.delete(1.0, "end")
     text_result.insert(1.0, calculation)
@@ -23,8 +23,8 @@ def add_to_calculation(symbol):
 
 def safe_eval(expression):
     try:
-        result = ast.literal_eval(expression)
-        return result
+        return ast.literal_eval(expression)
+        # return result
     except (ValueError, SyntaxError):
         return None
 
@@ -35,15 +35,15 @@ def is_valid_input(expression):
 
 
 def evaluate_calculation():
-    global calculation
+    global calculation, result 
     expression = calculation
 
     if is_valid_input(expression):
         result = safe_eval(expression)
         if result is not None:
-            calculation = str(result)
+            # calculation = str(result)
             text_result.delete(1.0, "end")
-            text_result.insert(1.0, calculation)
+            text_result.insert(1.0, result)
         else:
             clear_field()
             text_result.insert(1.0, "Error")
@@ -53,8 +53,9 @@ def evaluate_calculation():
 
 
 def clear_field():
-    global calculation
+    global calculation, result
     calculation = ""
+    result = None
     text_result.delete(1.0, "end")
 
 root = tk.Tk()
