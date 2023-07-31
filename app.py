@@ -1,6 +1,9 @@
 import tkinter as tk
+import ast
+import re
 
 calculation = ""
+result = None
 
 def add_to_calculation(symbol):
     global calculation
@@ -8,15 +11,46 @@ def add_to_calculation(symbol):
     text_result.delete(1.0, "end")
     text_result.insert(1.0, calculation)
 
+# def evaluate_calculation():
+#     global calculation
+#     try:
+#         calculation = str(eval(calculation))
+#         text_result.delete(1.0, "end")
+#         text_result.insert(1.0, calculation)
+#     except:
+#         clear_field()
+#         text_result.insert(1.0, "Error")
+
+def safe_eval(expression):
+    try:
+        result = ast.literal_eval(expression)
+        return result
+    except (ValueError, SyntaxError):
+        return None
+
+def is_valid_input(expression):
+    # Define a regular expression pattern for allowed characters
+    pattern = r'^[0-9+\-*/().\s]+$'
+    return re.match(pattern, expression)
+
+
 def evaluate_calculation():
     global calculation
-    try:
-        calculation = str(eval(calculation))
-        text_result.delete(1.0, "end")
-        text_result.insert(1.0, calculation)
-    except:
+    expression = calculation
+
+    if is_valid_input(expression):
+        result = safe_eval(expression)
+        if result is not None:
+            calculation = str(result)
+            text_result.delete(1.0, "end")
+            text_result.insert(1.0, calculation)
+        else:
+            clear_field()
+            text_result.insert(1.0, "Error")
+    else:
         clear_field()
-        text_result.insert(1.0, "Error")
+        text_result.insert(1.0, "Invalid Input")
+
 
 def clear_field():
     global calculation
@@ -69,3 +103,4 @@ btn_equals = tk.Button(root, text="=", command=evaluate_calculation, width=11, f
 btn_equals.grid(row=6, column=3, columnspan=2)
 
 root.mainloop()
+
